@@ -10,7 +10,14 @@ from .utils import write_config, load_language
 
 
 async def language(bot, channel, author, message, server, o_message):
-    """ Sets and updates current language of the bot
+    """
+
+    :param DiscordBot.DiscordBot bot:
+    :param discord.Channel channel:
+    :param discord.Member author:
+    :param discord.Message.content message:
+    :param discord.Server server:
+    :param discord.Message o_message:
     """
     modrole = discord.utils.get(server.roles, name=bot.modrole_name)
     adminrole = discord.utils.get(server.roles, name=bot.adminrole_name)
@@ -27,7 +34,7 @@ async def language(bot, channel, author, message, server, o_message):
             write_config("language", inputlocale)
             load_language(inputlocale)
 
-            await bot.add_reaction(o_message, '👍')
+            await bot.client.add_reaction(o_message, '👍')
         except IndexError:
             await bot.say(channel, _('The language is not available.\nAvailable languages: fr, en'))
     else:
@@ -35,6 +42,15 @@ async def language(bot, channel, author, message, server, o_message):
 
 
 async def bot_help_embed(bot, channel, author, message, server, o_message):
+    """
+
+    :param DiscordBot.DiscordBot bot:
+    :param discord.Channel channel:
+    :param discord.Member author:
+    :param discord.Message.content message:
+    :param discord.Server server:
+    :param discord.Message o_message:
+    """
     embed = discord.Embed(title=_('Scheduling bot - Help'))
     bnet_field = [_('**{prompt}schedule** ').format(prompt=bot.prompt),
                   _('Schedule a post (interactive mode).')]
@@ -52,11 +68,11 @@ async def schedule_post(bot, channel, author, message, server, o_message):
     """
 
     :param DiscordBot.DiscordBot bot:
-    :param channel:
-    :param author:
-    :param message:
+    :param discord.Channel channel:
+    :param discord.Member author:
+    :param discord.Message.content message:
     :param discord.Server server:
-    :param o_message:
+    :param discord.Message o_message:
     """
 
     # Todo add checks for inputs
