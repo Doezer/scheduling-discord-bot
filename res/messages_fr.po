@@ -1,0 +1,120 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR ORGANIZATION
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: \n"
+"POT-Creation-Date: 2018-05-11 15:46+0200\n"
+"PO-Revision-Date: 2018-05-11 15:56+0200\n"
+"Language-Team: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Generated-By: pygettext.py 1.5\n"
+"X-Generator: Poedit 2.0.7\n"
+"Last-Translator: \n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+"Language: fr\n"
+
+#: .\DiscordBot.py:93
+msgid "Something went wrong with that command."
+msgstr "Quelque chose n’allait pas avec cette commande."
+
+#: commands\core.py:32
+msgid ""
+"The language is not available.\n"
+"Available languages: fr, en"
+msgstr ""
+"Ce langage n'est pas disponible.\n"
+"Langages disponibles : fr, en"
+
+#: commands\core.py:34 commands\core.py:133
+msgid "You need to be moderator or administrator to do this."
+msgstr "Vous devez être modérateur ou administrateur pour faire ça."
+
+#: commands\core.py:38
+msgid "Scheduling bot - Help"
+msgstr "Bot de planification - Aide"
+
+#: commands\core.py:39
+msgid "**{prompt}schedule** "
+msgstr "**{prompt}schedule** "
+
+#: commands\core.py:40
+msgid "Schedule a post (interactive mode)."
+msgstr "Planifier un post (mode interactif)."
+
+#: commands\core.py:41
+msgid "**{prompt}language <language>**"
+msgstr "**{prompt}language <langage>**"
+
+#: commands\core.py:42
+msgid "Set the bot language : \"en\" or \"fr\"."
+msgstr "Définit le langage du bot (\"en\" ou \"fr\")"
+
+#: commands\core.py:45
+msgid "Find below the explanation for all commands."
+msgstr "Les commandes sont expliquées ci-après."
+
+#: commands\core.py:68
+msgid "Please ID the channel in which you want to send your message:"
+msgstr ""
+"Merci de mentionner le canal dans lequel vous voulez envoyer le message :"
+
+#: commands\core.py:74
+msgid "Please post the message you want to send at a later date:"
+msgstr "Merci de poster le message que vous souhaitez planifier :"
+
+#: commands\core.py:80
+msgid ""
+"This is how your message will display (removing any everyone or here, make "
+"sure the bot has permissions if any has to be said)!"
+msgstr ""
+"C'est ainsi que votre message sera affiché (les everyone/here ont été "
+"désactivés par souci de confort). Vérifiez bien que vous avez toutes les "
+"permissions nécessaires !"
+
+#: commands\core.py:83
+msgid ""
+"Please confirm (Y/N) whether this is the message you want to send or not:"
+msgstr "Merci de confirmer (Y/N) que ce message vous va :"
+
+#: commands\core.py:87
+msgid "Scheduling cancelled."
+msgstr "Planification annulée."
+
+#: commands\core.py:91
+msgid "Please post the type of message you want : interval or date"
+msgstr ""
+"Merci d'indiquer le type de message que vous voulez envoyer : interval ou "
+"date"
+
+#: commands\core.py:97
+msgid ""
+"This type is not yet available. Use only for specific announcements for now."
+msgstr "Ce type de planification n'est pas encore disponible."
+
+#: commands\core.py:109
+msgid ""
+"Please post the date you want to send the message using this format : YYYY."
+"MM.DD HH:mm"
+msgstr ""
+"Merci d'indiquer la date de planification en suivant ce format : YYYY.MM.DD "
+"HH:mm"
+
+#: commands\core.py:117
+msgid "I could not recognize the parameter"
+msgstr "Je n'ai pas reconnu ce paramètre."
+
+#: commands\core.py:122
+msgid "Timeout!"
+msgstr "Vous avez pris trop de temps pour répondre."
+
+#: commands\core.py:126
+msgid "Wrong format for date!"
+msgstr "Mauvais format pour la date."
+
+#: commands\core.py:131
+msgid "Message will be posted in channel %s at date %s"
+msgstr "Le message sera posté dans le canal %s à la date suivante : %s."
