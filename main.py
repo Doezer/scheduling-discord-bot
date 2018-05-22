@@ -75,23 +75,16 @@ def main():
                 '^{}(?:language)'.format(prompt): core.language}
 
 
-    if 'DG_TOKEN' in os.environ:
-        config = {'token': os.environ['DG_TOKEN']}
-    else:
-        with open('config.json') as f:
-            config = json.load(f)
+    with open('config.json') as f:
+        config = json.load(f)
 
     bot = DiscordBot(prompt)
-    # bot.register_message_handler(bot.client.send_message)
     for action in cmd_list:
         bot.register_action(action, cmd_list[action])
 
     # Here setup the scheduler with your own timezone
     bot.scheduler = AsyncIOScheduler(timezone=pytz.timezone('Europe/Paris'))
     bot.scheduler.start()
-
-    logging.warning('######## SCHEDULING THE PERIODIC CHECK FOR STREAMS EVERY DAY AT 00:10 ########')
-
 
     # Use this place (before the bot.run instruction) to manually scheduly any job you'd like
     # Here is an example that schedules a print('Hello world!') each day at 14:23
@@ -101,6 +94,7 @@ def main():
     #                           day='*',
     #                           hour='14',
     #                           minute='23')
+    # logging.warning('######## SCHEDULING THE PERIODIC CHECK EVERY DAY AT 14:23 ########')
 
     bot.run(config['token'])
 
