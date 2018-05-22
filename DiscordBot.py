@@ -92,6 +92,7 @@ class DiscordBot(object):
                             logger.exception(e)
                             await self.say(channel, _('Something went wrong with that command.'))
                         break
+                        
     def run(self, token):
         self.token = token
         self.client.run(self.token)
