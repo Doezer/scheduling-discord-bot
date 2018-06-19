@@ -3,14 +3,13 @@ import gettext
 import json
 import locale
 import logging
-import os
 import sys
 
 import pytz
 from apscheduler.schedulers.asyncio import AsyncIOScheduler
 
-from commands import core, utils
-from DiscordBot import DiscordBot
+import core
+from sample.DiscordBot import DiscordBot
 
 __appname__ = 'Scheduling Discord Bot'
 __version__ = "0.1"
@@ -71,7 +70,6 @@ def main():
 
     cmd_list = {'^{}help$'.format(prompt): core.bot_help_embed,
                 '^{}(?:schedule)$'.format(prompt): core.schedule_post,
-                '^{}(?:toggle)'.format(prompt): core.toggle,
                 '^{}(?:language)'.format(prompt): core.language}
 
 

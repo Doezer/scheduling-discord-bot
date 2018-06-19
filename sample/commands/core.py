@@ -6,7 +6,7 @@ import re
 
 import discord
 
-from .utils import write_config, load_language
+from utils import transform_emojis_in_str, write_config, load_language
 
 
 async def language(bot, channel, author, message, server, o_message):
@@ -114,7 +114,8 @@ async def schedule_post(bot, channel, author, message, server, o_message):
             type_schedule = type_schedule.content
 
             if type_schedule.upper() == 'INTERVAL':
-                await bot.say(channel, _('This type is not yet available. Use only for specific announcements for now.'))
+                await bot.say(channel, _('This type is not yet available. '
+                                         'Use only for specific announcements for now.'))
                 # # ask for timing
                 # await bot.say(channel, _('Please post the interval using cron format separated by / :'))
                 # # record timing
@@ -126,15 +127,15 @@ async def schedule_post(bot, channel, author, message, server, o_message):
 
             if type_schedule.upper() == 'DATE':
                 # ask for timing
-                await bot.say(channel,_('Please post the date you want to send the message '
-                                        'using this format : YYYY.MM.DD HH:mm'))
+                await bot.say(channel, _('Please post the date you want to send the message '
+                                         'using this format : YYYY.MM.DD HH:mm'))
                 # record timing
                 timing = await bot.client.wait_for_message(timeout=30, author=author, channel=channel)
                 timing = timing.content
                 # Transform to datetime
                 date_timing = datetime.datetime.strptime(timing, "%Y.%m.%d %H:%M")
             else:
-                await bot.say(channel,_('I could not recognize the parameter'))
+                await bot.say(channel, _('I could not recognize the parameter'))
                 return
 
         except asyncio.TimeoutError or AttributeError:
@@ -146,46 +147,11 @@ async def schedule_post(bot, channel, author, message, server, o_message):
             await bot.say(channel, _('Wrong format for date!'))
             return
 
+        message_to_post = message_to_post + '\nMessage scheduled thanks to OverTown: <https://discord.gg/jnRfdSr>'
         # schedule job
-        bot.scheduler.add_job(bot.say, trigger='date', args=(channel_to_post, message_to_post), run_date=date_timing)
+        bot.scheduler.add_job(bot.say, trigger='date',
+                              kwargs={channel: channel_to_post, message: message_to_post},
+                              run_date=date_timing)
         await bot.say(channel, _('Message will be posted in channel %s at date %s'), )
     else:
         await bot.say(channel, _('You need to be moderator or administrator to do this.'))
-
-
-def get_emoji_code(bot, emoji_to_search):
-    """
-
-    :param DiscordBot.DiscordBot bot:
-    :param str emoji_to_search:
-    :return:
-    """
-    emoji_generator = bot.client.get_all_emojis()
-    tmp = discord.utils.get(emoji_generator, name=emoji_to_search)
-    if not tmp:
-        logging.error('Couldn\'t find emote %s in the bot emojis. Please add it to a server.', emoji_to_search)
-        emojis = bot.client.get_all_emojis()
-        tmp = discord.utils.get(emojis, name=bot.default_emote)
-        logging.debug("transformed emoji is %s", tmp)
-    return tmp
-
-
-def transform_emojis_in_str(bot, message_to_post):
-    """
-
-    :param DiscordBot.DiscordBot bot:
-    :param str message_to_post:
-    """
-    emoji_list = re.findall(r':(\S+):', message_to_post)
-    logging.info("emoji_list is %s", emoji_list)
-
-    for emoji in emoji_list:
-        logging.info("message emoji is %s", emoji)
-        trans_emoji = get_emoji_code(bot, emoji)
-        logging.info("transformed emoji is %s", trans_emoji)
-        pattern_to_repl = fr'(<:{emoji}\S+>)'
-        message_to_post = re.sub(pattern=pattern_to_repl,
-                                 repl=f'<:{trans_emoji.name}:{trans_emoji.id}>',
-                                 string=message_to_post)
-        logging.info(message_to_post)
-    return message_to_post

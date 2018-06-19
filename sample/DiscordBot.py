@@ -37,10 +37,6 @@ def get_value_from_config(element, default_value=None, file_to_load=None):
 
 class DiscordBot(object):
     def __init__(self, prompt):
-        """ Initialize the discord bot.
-
-        :param str prompt: prompt of the bot (the character in front of the commands)
-        """
         super().__init__()
         self.client = discord.Client()
         self.prompt = prompt
@@ -55,9 +51,6 @@ class DiscordBot(object):
 
         @self.client.event
         async def on_ready():
-            """ Trigger when the bot is ready to listen to requests.
-
-            """
             logger.info('Logged in as')
             logger.info(self.client.user.name)
             logger.info(self.client.user.id)
@@ -73,10 +66,6 @@ class DiscordBot(object):
 
         @self.client.event
         async def on_message(message):
-            """ Trigger when a message is received on any channel where the bot listens.
-
-            :param Discord.Message message: the message received
-            """
             channel = message.channel
             author = message.author
             content = message.content
@@ -104,11 +93,16 @@ class DiscordBot(object):
         self.actions[regex] = (re.compile(regex, re.IGNORECASE), coro)
 
     async def say(self, channel, message=None, embed=None, image=None):
+
+        # Case say(channel, embed)
         if embed:
             await self.client.send_message(channel, embed=embed)
+        # Case say(channel, message, image)
         elif image and message:
             await self.client.send_file(channel, image, content=message)
+        # Case say(channel, image)
         elif image and not message:
             await self.client.send_file(channel, image)
+        # Case say(channel, message)
         else:
             await self.client.send_message(channel, message)
