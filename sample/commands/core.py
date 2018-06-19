@@ -147,7 +147,7 @@ async def schedule_post(bot, channel, author, message, server, o_message):
             await bot.say(channel, _('Wrong format for date!'))
             return
 
-        message_to_post = message_to_post + '\nMessage scheduled thanks to OverTown: <https://discord.gg/jnRfdSr>'
+        message_to_post = message_to_post + '\nMessage scheduled thanks to OverTown: <http://discord.overtown.fr/>'
         # schedule job
         bot.scheduler.add_job(bot.say, trigger='date',
                               kwargs={channel: channel_to_post, message: message_to_post},
