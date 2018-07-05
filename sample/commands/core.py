@@ -138,7 +138,9 @@ async def schedule_post(bot, channel, author, message, server, o_message):
                 elif 's' in interval:
                     second = interval_number
 
-                # ADD JOB
+                # ADD
+                message_to_post = message_to_post + '\nMessage scheduled thanks to OverTown:' \
+                                                    ' <http://discord.overtown.fr/>'
                 bot.scheduler.add_job(bot.say,
                                       kwargs={channel: channel_to_post, message: message_to_post},
                                       trigger='cron',
@@ -160,6 +162,7 @@ async def schedule_post(bot, channel, author, message, server, o_message):
                 date_timing = datetime.datetime.strptime(timing, "%Y.%m.%d %H:%M")
 
                 # ADD JOB
+                message_to_post = message_to_post + '\nMessage scheduled thanks to OverTown: <http://discord.overtown.fr/>'
                 bot.scheduler.add_job(bot.say, trigger='date',
                                       kwargs={channel: channel_to_post, message: message_to_post},
                                       run_date=date_timing)
@@ -172,7 +175,6 @@ async def schedule_post(bot, channel, author, message, server, o_message):
             await bot.say(channel, _('Wrong format for date!'))
             return
 
-        await bot.say(channel, _('Message will be posted in channel %s at date %s and '
-                                 'will be reposted if an interval was provided.'), channel_to_post, date_timing)
+        await bot.say(channel, _('Message will be posted in channel %s at date %s'), channel_to_post, date_timing)
     else:
         await bot.say(channel, _('You need to be moderator or administrator to do this.'))
