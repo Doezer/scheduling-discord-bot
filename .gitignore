@@ -38,6 +38,12 @@ pip-delete-this-directory.txt
 # Unit test / coverage reports
 htmlcov/
 .tox/
+
+# Fichiers sensibles et config locale
+config.json
+.env
+.idea/
+.vscode/
 .coverage
 .coverage.*
 .cache
