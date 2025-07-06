@@ -1,13 +1,18 @@
 
 # -*- coding: utf8 -*-
+import gettext
 import logging
+import os
 import re
+
 import discord
+import pytz
+from apscheduler.schedulers.asyncio import AsyncIOScheduler
+
 from src.config_utils import get_config_value
+
 logger = logging.getLogger(__name__)
 
-import os
-import gettext
 
 class DiscordBot(object):
     def __init__(self, prompt):
@@ -31,7 +36,6 @@ class DiscordBot(object):
         # Internationalisation (_)
         self._set_locale(self.language)
 
-
         @self.client.event
         async def on_ready():
             logger.info('Logged in as')
@@ -49,6 +53,21 @@ class DiscordBot(object):
                                                                                           guild.owner))
             logger.info('------')
 
+            # Here setup the scheduler with your own timezone
+            self.scheduler = AsyncIOScheduler(
+                timezone=pytz.timezone('Europe/Paris'))
+
+
+            if self.scheduler and not self.scheduler.running:
+                self.scheduler.start()
+                # Use this place (before the bot.run instruction) to manually schedule any job you'd like
+                # self.scheduler.add_job(print,
+                #                         trigger='cron',
+                #                         args=['Hello world!'],
+                #                         day='*',
+                #                         hour='14',
+                #                         minute='23')
+
         @self.client.event
         async def on_message(message):
             channel = message.channel
@@ -56,7 +75,8 @@ class DiscordBot(object):
             content = message.content
             guild = message.guild
             if author != self.user:
-                logger.info('Message received [{0}]: {1} - "{2}"'.format(channel, author, content))
+                logger.info(
+                    'Message received [{0}]: {1} - "{2}"'.format(channel, author, content))
                 for regex, command in self.actions.values():
                     match = regex.match(content)
                     if match:
@@ -75,7 +95,7 @@ class DiscordBot(object):
             trans = gettext.NullTranslations()
         trans.install()
         self._ = trans.gettext
-                        
+
     def run(self, token=None):
         # Privilégier la variable d'environnement si présente
         self.token = token or os.environ.get("DISCORD_TOKEN")

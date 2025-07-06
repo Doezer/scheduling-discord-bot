@@ -5,9 +5,6 @@ import locale
 import logging
 import sys
 
-import pytz
-from apscheduler.schedulers.asyncio import AsyncIOScheduler
-
 import src.cogs.core as core
 from src.DiscordBot import DiscordBot
 
@@ -79,20 +76,6 @@ def main():
     bot = DiscordBot(prompt)
     for action in cmd_list:
         bot.register_action(action, cmd_list[action])
-
-    # Here setup the scheduler with your own timezone
-    bot.scheduler = AsyncIOScheduler(timezone=pytz.timezone('Europe/Paris'))
-    bot.scheduler.start()
-
-    # Use this place (before the bot.run instruction) to manually scheduly any job you'd like
-    # Here is an example that schedules a print('Hello world!') each day at 14:23
-    # bot.scheduler.add_job(print,
-    #                           trigger='cron',
-    #                           args=['Hello world!'],
-    #                           day='*',
-    #                           hour='14',
-    #                           minute='23')
-    # logging.warning('######## SCHEDULING THE PERIODIC CHECK EVERY DAY AT 14:23 ########')
 
     bot.run(config['token'])
 

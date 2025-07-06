@@ -6,7 +6,7 @@ interval of days/hours/minutes/seconds.
 
 ## Run the bot
 This is a basic Python bot, no need for extra servers or anything. 
-Simply create a config.json file following the example filethen run main.py. 
+Simply create a config.json file following the example file then run main.py. 
 I guess you can also run it on Heroku or something.
 
 To add the bot to your server, use the OAUTH URL given by discord in the dev panel of the website. 
