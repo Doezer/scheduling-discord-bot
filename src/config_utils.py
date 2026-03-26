@@ -29,6 +29,12 @@ def get_config_value(key: str, default: Any = None, file_path: str = CONFIG_FILE
 
 
 def set_config_value(key: str, value: Any, file_path: str = CONFIG_FILE):
-    config = load_config(file_path)
-    config[key] = value
-    save_config(config, file_path)
+    with _config_lock:
+        try:
+            with open(file_path, "r", encoding="utf-8") as f:
+                config = json.load(f)
+        except FileNotFoundError:
+            config = {}
+        config[key] = value
+        with open(file_path, "w", encoding="utf-8") as f:
+            json.dump(config, f, indent=4, ensure_ascii=False)
