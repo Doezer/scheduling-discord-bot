@@ -8,7 +8,7 @@ import sys
 import src.cogs.core as core
 from src.DiscordBot import DiscordBot
 
-__appname__ = 'Scheduling Discord Bot'
+__appname__ = "Scheduling Discord Bot"
 __version__ = "0.1"
 __author__ = "Vincent 'Doezer' AIRIAU"
 
@@ -16,7 +16,7 @@ __author__ = "Vincent 'Doezer' AIRIAU"
 def get_prompt():
     prompt = "!"
     try:
-        with open('config.json', mode='r+', encoding='utf-8') as f:
+        with open("config.json", mode="r+", encoding="utf-8") as f:
             config = json.load(f)
             try:
                 prompt = config["prompt"]
@@ -26,21 +26,21 @@ def get_prompt():
                 f.write(json.dumps(config))
                 f.truncate()
             prompt = config["prompt"]
-    except:
+    except Exception:
         logging.debug("Prompt not found. Using default '{}'.".format(prompt))
 
-    logging.info('The prompt is {}.'.format(prompt))
+    logging.info("The prompt is {}.".format(prompt))
     return prompt
 
 
 def set_locale():
     try:
-        with open('config.json', mode='r+', encoding='utf-8') as f:
+        with open("config.json", mode="r+", encoding="utf-8") as f:
             config = json.load(f)
             language = config["language"]
         locale.setlocale(locale.LC_ALL, language)
-    except:
-        locale.setlocale(locale.LC_ALL, '')
+    except Exception:
+        locale.setlocale(locale.LC_ALL, "")
 
     loc = locale.getlocale()
     filename = "res/messages_%s.mo" % locale.getlocale()[0][0:2]
@@ -65,20 +65,21 @@ def main():
 
     set_locale()
 
-    cmd_list = {'^{}help$'.format(prompt): core.bot_help_embed,
-                '^{}(?:schedule)$'.format(prompt): core.schedule_post,
-                '^{}(?:language)'.format(prompt): core.language}
+    cmd_list = {
+        "^{}help$".format(prompt): core.bot_help_embed,
+        "^{}(?:schedule)$".format(prompt): core.schedule_post,
+        "^{}(?:language)".format(prompt): core.language,
+    }
 
-
-    with open('config.json') as f:
+    with open("config.json") as f:
         config = json.load(f)
 
     bot = DiscordBot(prompt)
     for action in cmd_list:
         bot.register_action(action, cmd_list[action])
 
-    bot.run(config['token'])
+    bot.run(config["token"])
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     main()
