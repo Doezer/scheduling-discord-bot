@@ -1,12 +1,11 @@
-
 # -*- coding: utf8 -*-
 import gettext
 import logging
 import os
 import re
+from zoneinfo import ZoneInfo
 
 import discord
-import pytz
 from apscheduler.schedulers.asyncio import AsyncIOScheduler
 
 from src.config_utils import get_config_value
@@ -24,9 +23,9 @@ class DiscordBot(object):
         self.client = discord.Client(intents=intents)
         self.prompt = prompt
         self.language = get_config_value("language", "en")
-        self.modrole_name = get_config_value("modrole_name", 'Modération')
-        self.adminrole_name = get_config_value("adminrole_name", 'Administration')
-        self.default_emote = get_config_value("default_emote", 'robot')
+        self.modrole_name = get_config_value("modrole_name", "Modération")
+        self.adminrole_name = get_config_value("adminrole_name", "Administration")
+        self.default_emote = get_config_value("default_emote", "robot")
         self.actions = {}
         self.user = None
         self.token = None
@@ -38,27 +37,25 @@ class DiscordBot(object):
 
         @self.client.event
         async def on_ready():
-            logger.info('Logged in as')
+            logger.info("Logged in as")
             if self.client.user:
                 logger.info(self.client.user.name)
                 logger.info(self.client.user.id)
                 self.username = self.client.user.name
                 self.user = self.client.user
             else:
-                logger.warning('self.client.user is None at on_ready')
-            logger.info('------')
+                logger.warning("self.client.user is None at on_ready")
+            logger.info("------")
             for guild in self.client.guilds:
-                logger.info('Bot is connected to {}, server id is {}, owned by {}'.format(guild.name,
-                                                                                          guild.id,
-                                                                                          guild.owner))
-            logger.info('------')
+                logger.info(
+                    "Bot is connected to {}, server id is {}, owned by {}".format(guild.name, guild.id, guild.owner)
+                )
+            logger.info("------")
 
             # Here setup the scheduler with your own timezone
-            self.scheduler = AsyncIOScheduler(
-                timezone=pytz.timezone('Europe/Paris'))
+            self.scheduler = AsyncIOScheduler(timezone=ZoneInfo("Europe/Paris"))
 
-
-            if self.scheduler and not self.scheduler.running:
+            if not self.scheduler.running:
                 self.scheduler.start()
                 # Use this place (before the bot.run instruction) to manually schedule any job you'd like
                 # self.scheduler.add_job(print,
@@ -75,8 +72,7 @@ class DiscordBot(object):
             content = message.content
             guild = message.guild
             if author != self.user:
-                logger.info(
-                    'Message received [{0}]: {1} - "{2}"'.format(channel, author, content))
+                logger.info('Message received [{0}]: {1} - "{2}"'.format(channel, author, content))
                 for regex, command in self.actions.values():
                     match = regex.match(content)
                     if match:
@@ -104,10 +100,10 @@ class DiscordBot(object):
         self.client.run(self.token)
 
     def register_action(self, regex, coro):
-        logger.info('Registering action {0}'.format(regex))
+        logger.info("Registering action {0}".format(regex))
         compiled = re.compile(regex, re.IGNORECASE)
         if regex in self.actions:
-            logger.info('Overwriting regex {0}'.format(regex))
+            logger.info("Overwriting regex {0}".format(regex))
         self.actions[regex] = (compiled, coro)
 
     async def say(self, channel, message=None, embed=None, image=None):
