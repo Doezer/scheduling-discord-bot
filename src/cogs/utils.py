@@ -1,25 +1,15 @@
 # -*- coding: utf8 -*-
 import gettext
-import json
 import logging
 import re
 
 import discord
 
-# S'assurer que _ est toujours défini pour la traduction
-try:
-    _
-except NameError:
-    _ = gettext.gettext
+from src.config_utils import set_config_value
 
 
-def write_config(element, value, file="config.json"):
-    with open(file, mode="r+", encoding="utf-8") as f:
-        config = json.load(f)
-        config[element] = value
-        f.seek(0)
-        f.write(json.dumps(config, ensure_ascii=False, indent=2))
-        f.truncate()
+def write_config(element, value):
+    set_config_value(element, value)
 
 
 def load_language(locale):
@@ -27,19 +17,12 @@ def load_language(locale):
     try:
         with open(filename, "rb") as f:
             trans = gettext.GNUTranslations(f)
-    except IOError:
+    except OSError:
         trans = gettext.NullTranslations()
     trans.install()
 
 
 def get_emoji_code(bot, emoji_to_search):
-    """
-
-    :param DiscordBot.DiscordBot bot:
-    :param str emoji_to_search:
-    :return:
-    """
-    # Pour discord.py v2+, get_all_emojis() devient emojis (attribut)
     emojis = getattr(bot.client, "emojis", [])
     tmp = discord.utils.get(emojis, name=emoji_to_search)
     if not tmp:
@@ -50,11 +33,6 @@ def get_emoji_code(bot, emoji_to_search):
 
 
 def transform_emojis_in_str(bot, message_to_post):
-    """
-
-    :param DiscordBot.DiscordBot bot:
-    :param str message_to_post:
-    """
     emoji_list = re.findall(r":(\S+):", message_to_post)
     logging.info("emoji_list is %s", emoji_list)
 
