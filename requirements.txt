@@ -1,3 +1,2 @@
-discord.py
-apscheduler
-pytz
+discord.py>=2.4.0
+apscheduler>=3.11.0

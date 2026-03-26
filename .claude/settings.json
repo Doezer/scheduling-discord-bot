@@ -1,0 +1,27 @@
+{
+  "hooks": {
+    "PreToolUse": [
+      {
+        "matcher": "Write|Edit",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "python -c \"import os,json,sys; d=json.loads(os.environ.get('CLAUDE_TOOL_INPUT','{}')); p=d.get('file_path',''); sys.exit(1 if 'config.json' in p and 'example' not in p else 0)\" || (echo 'ERROR: Direct edits to config.json are blocked. Use config.json.example as a reference or update values via set_config_value() in config_utils.py.' && exit 1)",
+            "blocking": true
+          }
+        ]
+      }
+    ],
+    "PostToolUse": [
+      {
+        "matcher": "Write|Edit",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "python -c \"import os,json,sys; d=json.loads(os.environ.get('CLAUDE_TOOL_INPUT','{}')); p=d.get('file_path',''); sys.exit(0 if p.endswith('.po') else 1)\" && python -c \"import os,json; p=json.loads(os.environ.get('CLAUDE_TOOL_INPUT','{}')).get('file_path',''); loc=p.split('messages_')[1][:2] if 'messages_' in p else ''; print(loc)\" | xargs -I{} sh -c 'msgfmt src/messages_{}.po -o res/messages_{}.mo && echo \"hook success: compiled res/messages_{}.mo\"' || true"
+          }
+        ]
+      }
+    ]
+  }
+}
