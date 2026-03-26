@@ -13,10 +13,9 @@ from src.config_utils import get_config_value
 logger = logging.getLogger(__name__)
 
 
-class DiscordBot(object):
+class DiscordBot:
     def __init__(self, prompt):
         super().__init__()
-        # Intents modernes pour discord.py v2+
         intents = discord.Intents.default()
         intents.message_content = True
         intents.guilds = True
@@ -29,10 +28,9 @@ class DiscordBot(object):
         self.actions = {}
         self.user = None
         self.token = None
-        self.scheduler = None
         self.username = None
+        self.scheduler = AsyncIOScheduler(timezone=ZoneInfo("Europe/Paris"))
 
-        # Internationalisation (_)
         self._set_locale(self.language)
 
         @self.client.event
@@ -47,17 +45,12 @@ class DiscordBot(object):
                 logger.warning("self.client.user is None at on_ready")
             logger.info("------")
             for guild in self.client.guilds:
-                logger.info(
-                    "Bot is connected to {}, server id is {}, owned by {}".format(guild.name, guild.id, guild.owner)
-                )
+                logger.info(f"Bot is connected to {guild.name}, server id is {guild.id}, owned by {guild.owner}")
             logger.info("------")
-
-            # Here setup the scheduler with your own timezone
-            self.scheduler = AsyncIOScheduler(timezone=ZoneInfo("Europe/Paris"))
 
             if not self.scheduler.running:
                 self.scheduler.start()
-                # Use this place (before the bot.run instruction) to manually schedule any job you'd like
+                # Use this place to manually schedule any job you'd like:
                 # self.scheduler.add_job(print,
                 #                         trigger='cron',
                 #                         args=['Hello world!'],
@@ -72,7 +65,7 @@ class DiscordBot(object):
             content = message.content
             guild = message.guild
             if author != self.user:
-                logger.info('Message received [{0}]: {1} - "{2}"'.format(channel, author, content))
+                logger.info(f'Message received [{channel}]: {author} - "{content}"')
                 for regex, command in self.actions.values():
                     match = regex.match(content)
                     if match:
@@ -87,27 +80,26 @@ class DiscordBot(object):
         try:
             filename = os.path.join("res", f"messages_{locale}.mo")
             trans = gettext.GNUTranslations(open(filename, "rb"))
-        except Exception:
+        except OSError:
+            logging.warning("Locale file not found for '%s', falling back to default.", locale)
             trans = gettext.NullTranslations()
         trans.install()
         self._ = trans.gettext
 
     def run(self, token=None):
-        # Privilégier la variable d'environnement si présente
         self.token = token or os.environ.get("DISCORD_TOKEN")
         if not self.token:
-            raise RuntimeError("Aucun token Discord fourni !")
+            raise RuntimeError("No Discord token provided. Set DISCORD_TOKEN or add 'token' to config.json.")
         self.client.run(self.token)
 
     def register_action(self, regex, coro):
-        logger.info("Registering action {0}".format(regex))
+        logger.info(f"Registering action {regex}")
         compiled = re.compile(regex, re.IGNORECASE)
         if regex in self.actions:
-            logger.info("Overwriting regex {0}".format(regex))
+            logger.info(f"Overwriting regex {regex}")
         self.actions[regex] = (compiled, coro)
 
     async def say(self, channel, message=None, embed=None, image=None):
-        # Utilisation des méthodes modernes discord.py v2+
         if embed:
             await channel.send(embed=embed)
         elif image and message:
